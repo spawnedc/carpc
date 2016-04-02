@@ -71,7 +71,7 @@ echo -e "\e[1;32mDownloading archive\e[0m"
 wget https://googledrive.com/host/0B5rjBYR8_iWJR2wyR2Y5X3lnaFU/rpi-carpc-update.zip -O ${PWD}/$UPDATE_DIR.zip
 
 echo -e "\e[1;32mUnpacking archive\e[0m"
-unzip -zxf ${PWD}/$UPDATE_DIR.zip
+unzip ${PWD}/$UPDATE_DIR.zip
 rm ${PWD}/$UPDATE_DIR.zip
 
 
