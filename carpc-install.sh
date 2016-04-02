@@ -68,7 +68,7 @@ sudo mkdir ${CARPC}
 sudo chmod -R a+rwx ${CARPC}
 
 echo -e "\e[1;32mDownloading archive\e[0m"
-wget https://drive.google.com/uc?export=download&id=0B5rjBYR8_iWJZ2FDT2p5LVV2c2s -O ${PWD}/$UPDATE_DIR.zip
+wget https://googledrive.com/host/0B5rjBYR8_iWJR2wyR2Y5X3lnaFU/rpi-carpc-update.zip -O ${PWD}/$UPDATE_DIR.zip
 
 echo -e "\e[1;32mUnpacking archive\e[0m"
 unzip -zxf ${PWD}/$UPDATE_DIR.zip
