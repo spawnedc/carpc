@@ -24,7 +24,8 @@ if [ ! -d "$NAVIT_BUILD_DIR" ]; then
 
   cd ~
   git clone https://github.com/navit-gps/navit.git
-  mkdir navit-build && cd navit-build
+  mkdir navit-build
+  cd navit-build
   cmake -DFREETYPE_INCLUDE_DIRS=/usr/include/freetype2/ --enable-map-csv ~/navit
   make -j4
 fi
