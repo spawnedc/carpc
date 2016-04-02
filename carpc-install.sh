@@ -155,13 +155,6 @@ mkdir -p $TO/${CARPC}/startup/
 $FROM/${CARPC}/startup/StartCarPC $TO/${CARPC}/startup/StartCarPC
 $FROM/${CARPC}/startup/StartCarPC_stage2 $TO/${CARPC}/startup/StartCarPC_stage2
 
-#############################################################
-# Sources
-#############################################################
-echo -e "\e[1;32mSources\e[0m"
-mkdir -p $TO/${CARPC}/
-$FROM/${CARPC}/src/ $TO/${CARPC}
-
 cp -f $UPDATE_DIR/version /${CARPC}/.carpc.version
 
 sync
