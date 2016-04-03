@@ -4,6 +4,7 @@
 * Download a fresh copy of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Not lite)
 * Write it to the sd card. Follow [these instructions](https://www.raspberrypi.org/documentation/installation/installing-images/README.md) if you are not sure how to do it.
 * Put the sd card back to the PI, attach a keyboard, a mouse and a network cable and boot up the pi.
+* (Optional) Update `/etc/apt/sources.list`. Pick a mirror from [here](http://www.raspbian.org/RaspbianMirrors).
 * Open up terminal, type: `sudo raspi-config`, and press enter.
 * On raspi-config, do the following:
   * Expand Filesystem
