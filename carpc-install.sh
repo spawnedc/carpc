@@ -1,10 +1,29 @@
 #!/bin/bash
 
+HOME="/home/pi"
+SOURCES_DIR="${HOME}/src"
+NAVIT_BUILD_DIR="${SOURCES_DIR}/navit-build"
+WIRINGPI_BUILD_DIR="${SOURCES_DIR}/wiringPi"
+
+if [ ! -d "$SOURCES_DIR" ]; then
+  mkdir ${SOURCES_DIR}
+fi
+
 # free some space
 sudo apt-get --yes --force-yes remove --purge minecraft-pi scratch wolfram-engine debian-reference-* epiphany-browser* sonic-pi supercollider*
 
 # install Kodi dependencies
 sudo apt-get --yes --force-yes install libssh-4 libmicrohttpd10 libtinyxml2.6.2 libyajl2 libmysqlclient18 liblzo2-2 libpcrecpp0 libmysqlclient-dev
+
+# Jessie issues
+wget http://ftp.uk.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u3_armhf.deb
+sudo dpkg -i libgcrypt11_1.5.0-5+deb7u3_armhf.deb
+sudo apt-get --yes install libtasn1-3
+wget http://ftp.uk.debian.org/debian/pool/main/g/gnutls26/libgnutls26_2.12.20-8+deb7u3_armhf.deb
+sudo dpkg -i libgnutls26_2.12.20-8+deb7u3_armhf.deb
+
+rm libgcrypt11_1.5.0-5+deb7u3_armhf.deb
+rm libgnutls26_2.12.20-8+deb7u3_armhf.deb
 
 # Send click events to X windows
 sudo apt-get --yes --force-yes install xdotool
@@ -15,31 +34,27 @@ sudo apt-get --yes --force-yes install gpsd gpsd-clients
 # espeak
 sudo apt-get --yes --force-yes install espeak
 
-NAVIT_BUILD_DIR="/home/pi/navit-build"
-
 # Download and build Navit
 if [ ! -d "$NAVIT_BUILD_DIR" ]; then
   # navit dev
   sudo apt-get --yes install git imagemagick libdbus-1-dev libdbus-glib-1-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libimlib2-dev librsvg2-bin libspeechd-dev libxml2-dev ttf-liberation libgtk2.0-dev gcc g++ cmake make zlib1g-dev libpng12-dev libsdl-image1.2-dev libdevil-dev libglc-dev freeglut3-dev libxmu-dev libgps-dev
 
-  cd ~
+  cd ${SOURCES_DIR}
   git clone https://github.com/navit-gps/navit.git
-  mkdir navit-build
-  cd navit-build
-  cmake -DFREETYPE_INCLUDE_DIRS=/usr/include/freetype2/ --enable-map-csv ~/navit
+  mkdir ${NAVIT_BUILD_DIR}
+  cd ${NAVIT_BUILD_DIR}
+  cmake -DFREETYPE_INCLUDE_DIRS=/usr/include/freetype2/ --enable-map-csv ${SOURCES_DIR}/navit
   make -j4
 fi
-
-WIRINGPI_BUILD_DIR="/home/pi/wiringPi"
-
-# Install wiringPI
-if [ ! -d "$WIRINGPI_BUILD_DIR" ]; then
-  cd ~
-  git clone git://git.drogon.net/wiringPi
-  cd wiringPi
-  git pull origin
-  ./build
-fi
+#
+# # Install wiringPI
+# if [ ! -d "$WIRINGPI_BUILD_DIR" ]; then
+#   cd ${SOURCES_DIR}
+#   git clone git://git.drogon.net/wiringPi
+#   cd ${WIRINGPI_BUILD_DIR}
+#   git pull origin
+#   ./build
+# fi
 
 # Cleanup
 sudo apt-get --yes autoremove
@@ -73,7 +88,6 @@ wget https://googledrive.com/host/0B5rjBYR8_iWJR2wyR2Y5X3lnaFU/rpi-carpc-update.
 echo -e "\e[1;32mUnpacking archive\e[0m"
 unzip ${PWD}/$UPDATE_DIR.zip
 rm ${PWD}/$UPDATE_DIR.zip
-
 
 #############################################################
 # System
@@ -119,6 +133,12 @@ sudo ln -s /usr/local/lib/libshairport.so /usr/local/lib/libshairport.so.0
 sudo rm /usr/local/lib/libcec.so.2
 sudo ln -s /usr/local/lib/libcec.so /usr/local/lib/libcec.so.2
 
+# CarPC autostart
+mkdir -p $TO/home/pi/.config
+mkdir -p $TO/home/pi/.config/lxsession
+mkdir -p $TO/home/pi/.config/lxsession/LXDE-pi
+$FROM/home/pi/.config/lxsession/LXDE-pi/autostart $TO/home/pi/.config/lxsession/LXDE-pi
+
 # KODI Addons
 echo -e "\e[1;32mKODI Addons\e[0m"
 mkdir -p $TO/home/pi/.kodi/
@@ -129,8 +149,10 @@ $FROM/home/pi/.kodi/addons $TO/home/pi/.kodi/
 #############################################################
 echo -e "\e[1;32mNavit\e[0m"
 mkdir -p $TO/home/pi/.navit/xml/skins
-$FROM/${CARPC}/navit $TO/${CARPC}/
+$FROM/${NAVIT_BUILD_DIR}/navit $TO/${CARPC}/
 $FROM/home/pi/.navit/ $TO/home/pi/
+mv ${CARPC}/navit/navit.xml ${CARPC}/navit/navit.xml.orig
+ln -s ${HOME}/.navit/navit.xml ${CARPC}/navit/
 echo -e "\e[1;32mDownloading map\e[0m"
 wget http://maps9.navit-project.org/api/map/?bbox=-9.7,49.6,2.2,61.2 -O $TO/home/pi/.navit/map1.bin
 
