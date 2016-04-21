@@ -148,7 +148,7 @@ $FROM/home/pi/.kodi/addons /home/pi/.kodi/
 #############################################################
 echo -e "\e[1;32mNavit\e[0m"
 mkdir -p /home/pi/.navit/xml/skins
-${NAVIT_BUILD_DIR}/navit ${CARPC}
+cp -r ${NAVIT_BUILD_DIR}/navit ${CARPC}
 $FROM/home/pi/.navit/ /home/pi/
 mv ${CARPC}/navit/navit.xml ${CARPC}/navit/navit.xml.orig
 ln -s ${HOME}/.navit/navit.xml ${CARPC}/navit/
