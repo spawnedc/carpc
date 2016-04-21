@@ -69,10 +69,9 @@ source ~/.bashrc
 ######################################################
 UPDATE_DIR="rpi-carpc-update"
 
-FROM="cp -r ${PWD}/$UPDATE_DIR/"
+FROM="cp -r ${PWD}/$UPDATE_DIR"
 FROM_SU="sudo ${FROM}"
-TO="/"
-CARPC="/opt/carpc/"
+CARPC="/opt/carpc"
 
 #############################################################
 # Unpack archive
@@ -97,36 +96,36 @@ echo -e "\e[1;32mKernel\e[0m"
 sudo rm -rf /boot/kernel7.img
 sudo rm -rf /lib/firmware/
 sudo rm -rf /lib/modules/
-mkdir -p $TO/boot/
-mkdir -p $TO/lib/
-$FROM_SU/lib/modules/ $TO/lib/
-$FROM_SU/lib/firmware/ $TO/lib/
-$FROM_SU/boot/kernel7.img $TO/boot/
+mkdir -p /boot/
+mkdir -p /lib/
+$FROM_SU/lib/modules/ /lib/
+$FROM_SU/lib/firmware/ /lib/
+$FROM_SU/boot/kernel7.img /boot/
 
 # Autostart KODI
-$FROM_SU/etc/inittab $TO/etc/
-$FROM_SU/etc/profile $TO/etc/
-$FROM_SU/etc/modprobe.d/raspi-blacklist.conf $TO/etc/modprobe.d/
+$FROM_SU/etc/inittab /etc/
+$FROM_SU/etc/profile /etc/
+$FROM_SU/etc/modprobe.d/raspi-blacklist.conf /etc/modprobe.d/
 
 #############################################################
 # KODI
 #############################################################
 echo -e "\e[1;32mKODI core\e[0m"
 # Create local directories
-mkdir -p $TO/usr/local/include/
-mkdir -p $TO/usr/local/lib/
-mkdir -p $TO/usr/local/share/
+mkdir -p /usr/local/include/
+mkdir -p /usr/local/lib/
+mkdir -p /usr/local/share/
 
 # Copy Kodi new files
-$FROM_SU/usr/local/include/libcec/ $TO/usr/local/include/
-$FROM_SU/usr/local/include/shairport/ $TO/usr/local/include/
-$FROM_SU/usr/local/include/taglib/ $TO/usr/local/include/
-$FROM_SU/usr/local/include/kodi $TO/usr/local/include/
-$FROM_SU/usr/local/lib/kodi/ $TO/usr/local/lib/
-$FROM_SU/usr/local/lib/libcec* $TO/usr/local/lib/
-$FROM_SU/usr/local/lib/libshair* $TO/usr/local/lib/
-$FROM_SU/usr/local/lib/libtag* $TO/usr/local/lib/
-$FROM_SU/usr/local/share/kodi/ $TO/usr/local/share/
+$FROM_SU/usr/local/include/libcec/ /usr/local/include/
+$FROM_SU/usr/local/include/shairport/ /usr/local/include/
+$FROM_SU/usr/local/include/taglib/ /usr/local/include/
+$FROM_SU/usr/local/include/kodi /usr/local/include/
+$FROM_SU/usr/local/lib/kodi/ /usr/local/lib/
+$FROM_SU/usr/local/lib/libcec* /usr/local/lib/
+$FROM_SU/usr/local/lib/libshair* /usr/local/lib/
+$FROM_SU/usr/local/lib/libtag* /usr/local/lib/
+$FROM_SU/usr/local/share/kodi/ /usr/local/share/
 
 sudo rm /usr/local/lib/libshairport.so.0
 sudo ln -s /usr/local/lib/libshairport.so /usr/local/lib/libshairport.so.0
@@ -134,48 +133,50 @@ sudo rm /usr/local/lib/libcec.so.2
 sudo ln -s /usr/local/lib/libcec.so /usr/local/lib/libcec.so.2
 
 # CarPC autostart
-mkdir -p $TO/home/pi/.config
-mkdir -p $TO/home/pi/.config/lxsession
-mkdir -p $TO/home/pi/.config/lxsession/LXDE-pi
-$FROM/home/pi/.config/lxsession/LXDE-pi/autostart $TO/home/pi/.config/lxsession/LXDE-pi
+mkdir -p /home/pi/.config
+mkdir -p /home/pi/.config/lxsession
+mkdir -p /home/pi/.config/lxsession/LXDE-pi
+$FROM/home/pi/.config/lxsession/LXDE-pi/autostart /home/pi/.config/lxsession/LXDE-pi
 
 # KODI Addons
 echo -e "\e[1;32mKODI Addons\e[0m"
-mkdir -p $TO/home/pi/.kodi/
-$FROM/home/pi/.kodi/addons $TO/home/pi/.kodi/
+mkdir -p /home/pi/.kodi/
+$FROM/home/pi/.kodi/addons /home/pi/.kodi/
 
 #############################################################
 # Navit
 #############################################################
 echo -e "\e[1;32mNavit\e[0m"
-mkdir -p $TO/home/pi/.navit/xml/skins
-$FROM/${NAVIT_BUILD_DIR}/navit $TO/${CARPC}/
-$FROM/home/pi/.navit/ $TO/home/pi/
+mkdir -p /home/pi/.navit/xml/skins
+cp -r ${NAVIT_BUILD_DIR}/navit ${CARPC}
+$FROM/home/pi/.navit/ /home/pi/
 mv ${CARPC}/navit/navit.xml ${CARPC}/navit/navit.xml.orig
 ln -s ${HOME}/.navit/navit.xml ${CARPC}/navit/
-echo -e "\e[1;32mDownloading map\e[0m"
-wget http://maps9.navit-project.org/api/map/?bbox=-9.7,49.6,2.2,61.2 -O $TO/home/pi/.navit/map1.bin
+if [ ! -f "/home/pi/.navit/map1.bin" ]; then
+  echo -e "\e[1;32mDownloading map\e[0m"
+  wget http://maps9.navit-project.org/api/map/?bbox=-9.7,49.6,2.2,61.2 -O /home/pi/.navit/map1.bin
+fi
 
 #############################################################
 # Binaries: carpc-controller, set_date
 #############################################################
 echo -e "\e[1;32mBinaries\e[0m"
-mkdir -p $TO/usr/bin/
-$FROM_SU/usr/bin/carpc-setdate $TO/usr/bin/
+mkdir -p /usr/bin/
+$FROM_SU/usr/bin/carpc-setdate /usr/bin/
 
 #############################################################
 # Tools
 #############################################################
 echo -e "\e[1;32mTools\e[0m"
-mkdir -p $TO/${CARPC}
-$FROM/${CARPC}/tools $TO/${CARPC}/
+mkdir -p /${CARPC}
+$FROM/${CARPC}/tools /${CARPC}/
 
 #############################################################
 # Startup
 #############################################################
-mkdir -p $TO/${CARPC}/startup/
-$FROM/${CARPC}/startup/StartCarPC $TO/${CARPC}/startup/StartCarPC
-$FROM/${CARPC}/startup/StartCarPC_stage2 $TO/${CARPC}/startup/StartCarPC_stage2
+mkdir -p /${CARPC}/startup/
+$FROM/${CARPC}/startup/StartCarPC /${CARPC}/startup/StartCarPC
+$FROM/${CARPC}/startup/StartCarPC_stage2 /${CARPC}/startup/StartCarPC_stage2
 
 cp -f $UPDATE_DIR/version /${CARPC}/.carpc.version
 

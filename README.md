@@ -20,6 +20,13 @@
     * Audio -> Force 3.5mm ('headphone') jack
     * Update
 * Exit raspi-config and reboot.
+* Edit `config.txt`
+
+```
+hdmi_group=2
+hdmi_mode=28
+hdmi_ignore_cec=1
+```
 
 ## VNC setup (optional)
 * Follow these instructions: https://www.raspberrypi.org/documentation/remote-access/vnc/
