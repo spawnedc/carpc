@@ -69,7 +69,7 @@ source ~/.bashrc
 ######################################################
 UPDATE_DIR="rpi-carpc-update"
 
-FROM="cp -r ${PWD}/$UPDATE_DIR/"
+FROM="cp -r ${PWD}/$UPDATE_DIR"
 FROM_SU="sudo ${FROM}"
 TO="/"
 CARPC="/opt/carpc/"
